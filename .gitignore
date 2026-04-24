@@ -2,7 +2,6 @@
 .venv/
 __pycache__/
 *.pyc
-data/db.sqlite
 data/runs/
 data/seed/*_snapshot.json
 .pytest_cache/
