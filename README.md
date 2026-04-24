@@ -10,7 +10,7 @@ For this purpose, only a real integration with "Product Hunt" was impolemented, 
 
 ## Demo
 
-Live site: 
+Live site: (https://hirelatamassesment202604-kkiujice8983s422xcvnsq.streamlit.app/)
 
 To build locally
 
@@ -28,8 +28,61 @@ make demo          # init-db + ingest + enrich + DM draft (~5 min, ~15¢ of Open
 make dashboard     # streamlit on http://localhost:8501
 ```
 
-Mermaid sequence diagram
+Application Flow
 
+```mermaid
+sequenceDiagram
+    actor User
+    participant Pipeline as Agent Pipeline
+    participant Sources as Data Sources<br/>(real + mocked)
+    participant AI as AI Model
+    participant DB as Database
+    participant Dashboard
+
+    User->>Pipeline: 1. Trigger pipeline
+
+    Note over Pipeline,Sources: 2. Pull data — one source at a time
+    Pipeline->>Sources: Product Hunt (real)
+    Sources-->>Pipeline: Launch posts
+    Pipeline->>Sources: X, LinkedIn, Crunchbase, YC (mocked)
+    Sources-->>Pipeline: Posts, fundraises, companies
+    Note right of Sources: Real vs. mocked is<br/>explicit on every row
+
+    Note over Pipeline,AI: 3. AI filters, enriches, drafts
+    Pipeline->>AI: Is this a real launch? What kind?
+    AI-->>Pipeline: yes / no + reasoning
+    Pipeline->>AI: Find contact info per company
+    AI-->>Pipeline: email, phone, LinkedIn, X
+    Pipeline->>AI: Draft outreach for low-engagement launches
+    AI-->>Pipeline: Warm DM (subject + body)
+    Note right of AI: Every AI decision is<br/>logged for later review
+
+    Note over Pipeline,DB: 4. Save filtered + enriched data
+    Pipeline->>DB: Companies, launches, funding, contacts, DMs
+    Note right of DB: Single file — no servers,<br/>no extra infrastructure
+
+    Note over Dashboard,User: 5. View results
+    User->>Dashboard: Open dashboard
+    Dashboard->>DB: Read
+    DB-->>Dashboard: Data
+    Dashboard-->>User: Charts, tables, drafts,<br/>and the AI decision history
+```
+
+## What was not built
+
+The following concept where delivered excluded from the current project due the POC scope
+
+- Clean Architecture & other software patterns
+- Logging, Tracing, and APM
+- Authentification
+- Tenancy/Multi-tenancy
+- Idempotency
+- Row Level Security (RLS), ORM, and Caching
+- CI/CD deploy
+- SOLID principles, in special dependency injection
+- E2E testing, and advance testing, current unit testing implementation is very basic and don't cover edge cases.
+- Resilience/Connectivity patterns like retry or circuit breaker
+- Optimizations for batch process, and LLM model interactions.
 
 
 ### What's real, what's mocked

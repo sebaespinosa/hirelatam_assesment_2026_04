@@ -1,7 +1,0 @@
-Great — end-to-end works. Before updating the plan docs, one quick observation worth surfacing:
-
-89/100 rejection rate on Product Hunt. That's not a bug — our launch classifier definition was crafted for X-style launch tweets (first-person founder announcement, "Introducing…", launch vocabulary, agency). PH post taglines are marketing copy ("AI-powered invoice automation for SMBs") with no first-person framing. The classifier is correctly saying "this doesn't match the definition." But practically: every post on Product Hunt is a curated launch by construction, so filtering them through an X-shaped classifier throws away real data. Worth a 1-line decision later — either (a) skip classification for PH and trust the source, or (b) make the classifier source-aware. Not fixing now; just flagging for after plan docs.
-
-The eval numbers are healthy: 12/12 negatives rejected correctly (neg accuracy 1.000), pos_016 FN is the known-malformed placeholder (evals/README.md already says "fix or delete"), and Precision/Recall are 0.000 only because no positives are pasted yet (tp=0, no denominator).
-
-Now updating the plan docs.
