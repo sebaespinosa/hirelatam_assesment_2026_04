@@ -14,7 +14,7 @@ Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusio
 
 A reviewer-facing demo with four moving parts, in order of importance:
 
-1. **Agent orchestrator** (`src/agent/orchestrator.py`, Phase 5) — single Python script using the Anthropic messages API with `tool_use`. One tool per data source + classifier + persistence + enrichment + DM draft. This is the AI-engineering centerpiece the reviewer is evaluating.
+1. **Agent orchestrator** (`src/agent/orchestrator.py`, Phase 5) — single Python script using the OpenAI Chat Completions API with function calling. One tool per data source + classifier + persistence + enrichment + DM draft. This is the AI-engineering centerpiece the reviewer is evaluating.
 2. **Launch classifier** (`prompts/launch_classifier.md`, Phase 2) — prompt-based filter that turns the pipeline from "firehose ingester" into "intent-aware curator". Has a small eval set at `evals/launch_classifier.jsonl`. See [PHASES.md §Phase 2](PHASES.md).
 3. **Streamlit dashboard** ([dashboard.py](dashboard.py), Phase 8 — currently a hello-world) — read-only UI over SQLite. Tabs: main dashboard + agent run log viewer (the run log viewer is what sells the AI-engineering story — don't drop it).
 4. **README + Loom** (Phase 9) — tradeoff communication is part of the deliverable, not documentation of it.
@@ -90,7 +90,7 @@ Tooling is `uv` with Python ≥ 3.11. `uv.lock` is committed for reviewer reprod
 
 **Single test:** `uv run pytest path/to/test_file.py::test_name` or `uv run pytest -k <pattern>`.
 
-Deps in [pyproject.toml](pyproject.toml): runtime — `anthropic`, `streamlit`, `pydantic`, `httpx`, `python-dotenv`; dev — `pytest`, `ruff`. No `sqlite-utils`; the DB layer will use the stdlib `sqlite3` module (Phase 1 decision — fewer deps, same ergonomics for this scope).
+Deps in [pyproject.toml](pyproject.toml): runtime — `openai`, `streamlit`, `pydantic`, `httpx`, `python-dotenv`; dev — `pytest`, `ruff`. No `sqlite-utils`; the DB layer will use the stdlib `sqlite3` module (Phase 1 decision — fewer deps, same ergonomics for this scope).
 
 Ruff config in [pyproject.toml](pyproject.toml): line length 100, rule set `E,F,I,UP,B,SIM`, target `py311`.
 
@@ -106,18 +106,23 @@ The plan has explicit cut points ([PHASES.md §Contingency & Cut Points](PHASES.
 
 `pos_016` has a known-malformed X URL (truncated status ID); either fix it or delete the entry before running the full eval.
 
+## LLM provider
+
+**OpenAI.** [PLAN.md](PLAN.md) and [PHASES.md](PHASES.md) were written targeting the Anthropic messages API with `tool_use`; the user swapped to OpenAI for credit reasons. The architecture pattern (forced structured output from an LLM call) is provider-neutral, but the docs still read "Anthropic" in places — treat that as historical framing, not a spec mismatch. If a future reviewer needs the Anthropic story, swapping back is a ~20-min reversal on one file ([src/classifier/classify.py](src/classifier/classify.py)) since the `ClassifierBackend` Protocol isolates provider details.
+
 ## Classifier invariants
 
-- **Forced tool use, not free-form JSON.** [src/classifier/classify.py](src/classifier/classify.py) calls Anthropic with `tool_choice={"type": "tool", "name": "record_classification"}` so the model can only respond via the tool. Schema adherence is enforced by the API rather than parsed after the fact.
-- **Prompt caching on the system block.** The system prompt is sent with `cache_control: {"type": "ephemeral"}`. 40+ calls in a single eval run share one cache entry.
-- **Backend injection for tests.** `classify_launch(..., backend=StubBackend(response))` bypasses Anthropic entirely. No test should hit the network.
+- **Forced Structured Outputs, not free-form JSON.** [src/classifier/classify.py](src/classifier/classify.py) calls OpenAI Chat Completions with `response_format={"type": "json_schema", "json_schema": CLASSIFIER_OUTPUT_SCHEMA}` and `strict: true`. The entire response body is the classification — no tool-call wrapper, no JSON parsing from free text. Schema adherence is enforced by the API.
+- **Automatic prompt caching.** OpenAI caches system prompts >1024 tokens automatically when the content is byte-identical across calls. No explicit flags. Consequence: **do not mutate the system prompt per-call** — any formatting drift breaks the cache.
+- **Backend injection for tests.** `classify_launch(..., backend=StubBackend(response))` bypasses OpenAI entirely. No test should hit the network.
 - **Cross-field invariant on `ClassificationResult`.** `launch_type` must be non-null iff `is_launch` is true — enforced by a Pydantic `@model_validator`. Don't relax this; the dashboard and DM-draft pass rely on it.
 - **System prompt lives in markdown, not Python.** [src/classifier/prompt.py](src/classifier/prompt.py) loads [prompts/launch_classifier.md](prompts/launch_classifier.md) and strips the metadata header below `## System Prompt`. Never inline the prompt as a Python string.
-- **Default model is `claude-haiku-4-5`.** Classification is high-volume pattern-match; Haiku is the cost-appropriate choice. Override via `AnthropicBackend(model=...)` if accuracy regresses on the eval set.
+- **Default model is `gpt-4o-mini`.** Classification is high-volume pattern-match; `gpt-4o-mini` is the cost-appropriate choice (also reliably available on any active OpenAI account). Override via `OpenAIBackend(model=...)` if accuracy regresses on the eval set.
+- **Strict-mode schema caveat.** OpenAI `strict: true` ignores `minimum`/`maximum`/`minLength` constraints on JSON Schema primitives. Range/length validation happens in the Pydantic `ClassificationResult` after parsing — belt and suspenders, don't remove either layer.
 
 ## Source adapter invariants
 
-- **Every source module exposes `ingest(*, conn, nodes, classify, persist, classify_fn)`.** The `classify_fn` parameter takes the Phase 2 `classify_launch` by default and accepts a fake for tests so no source-adapter test ever touches the real Anthropic client.
+- **Every source module exposes `ingest(*, conn, nodes, classify, persist, classify_fn)`.** The `classify_fn` parameter takes the Phase 2 `classify_launch` by default and accepts a fake for tests so no source-adapter test ever touches the real OpenAI client.
 - **`normalize_post`-style functions are pure.** They return `(Company, Launch)` with `launch.company_id = -1` as a placeholder; the ingest pipeline fills in the real id after `upsert_company`. Do not make the normalizer open a DB connection.
 - **`raw_payload` stores the full un-normalized node plus any derived fields.** The classifier result goes in as `raw_payload["_classification"]` so rejection reasoning survives the filter without a schema change.
 - **Snapshot fallback is per-source.** Each source that talks to a remote API saves its last successful response to `data/seed/<source>_snapshot.json` and falls back to it on any network failure. Snapshots are gitignored — treat them as local dev caches, not reviewer seed data.

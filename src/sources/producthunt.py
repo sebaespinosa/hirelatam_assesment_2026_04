@@ -37,6 +37,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from dotenv import load_dotenv
 
 from src.classifier import ClassificationResult, classify_launch
 from src.db import get_connection
@@ -271,7 +272,7 @@ def ingest(
 
     ``conn`` may be ``None`` iff ``persist=False`` (dry-run mode). ``classify_fn``
     is a parameter so tests can inject a deterministic fake without touching
-    the Anthropic client.
+    the OpenAI client.
     """
     if persist and conn is None:
         raise ValueError("conn is required when persist=True")
@@ -347,6 +348,7 @@ def _fetch_nodes(args: argparse.Namespace) -> list[dict[str, Any]]:
 
 
 def main() -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,

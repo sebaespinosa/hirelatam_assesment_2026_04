@@ -19,7 +19,7 @@ def load_prompt_file() -> str:
 
 
 def load_system_prompt() -> str:
-    """Return the prompt body that should be sent as the Anthropic ``system`` input.
+    """Return the prompt body that should be sent as the ``system`` message.
 
     Strips the file header (title + YAML-ish metadata) so only the instruction
     content below ``## System Prompt`` is sent to the model.

@@ -21,6 +21,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 from src.classifier import ClassificationResult, classify_launch
 
 DEFAULT_EVAL_PATH = Path("evals/launch_classifier.jsonl")
@@ -139,6 +141,7 @@ def print_report(outcome: Outcome) -> int:
 
 
 def main() -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,

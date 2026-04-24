@@ -11,7 +11,7 @@ class ClassificationResult(BaseModel):
     """Output of the launch classifier.
 
     Mirrors the schema documented in `docs/launch_definition.md` §6 and the
-    tool schema used in `AnthropicBackend`. `launch_type` must be non-null iff
+    output schema used in `OpenAIBackend`. `launch_type` must be non-null iff
     `is_launch` is true — enforced below.
     """
 

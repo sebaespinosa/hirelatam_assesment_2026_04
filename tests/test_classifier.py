@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from src.classifier import CLASSIFIER_TOOL_SCHEMA, ClassificationResult, classify_launch
+from src.classifier import CLASSIFIER_OUTPUT_SCHEMA, ClassificationResult, classify_launch
 from src.classifier.prompt import load_prompt_version, load_system_prompt
 
 
@@ -139,14 +139,21 @@ def test_load_prompt_version_matches_file() -> None:
     assert version == "v1"
 
 
-# --- tool schema sanity ----------------------------------------------------
+# --- output schema sanity --------------------------------------------------
 
 
-def test_tool_schema_enumerates_launch_types() -> None:
-    enum = CLASSIFIER_TOOL_SCHEMA["input_schema"]["properties"]["launch_type"]["enum"]
-    assert set(enum) == {"product", "feature", "milestone", "program", None}
+def test_output_schema_is_strict() -> None:
+    assert CLASSIFIER_OUTPUT_SCHEMA["strict"] is True
+    assert CLASSIFIER_OUTPUT_SCHEMA["schema"]["additionalProperties"] is False
 
 
-def test_tool_schema_required_fields_match_model() -> None:
-    required = set(CLASSIFIER_TOOL_SCHEMA["input_schema"]["required"])
+def test_output_schema_launch_type_nullable_enum() -> None:
+    variants = CLASSIFIER_OUTPUT_SCHEMA["schema"]["properties"]["launch_type"]["anyOf"]
+    string_variant = next(v for v in variants if v.get("type") == "string")
+    assert set(string_variant["enum"]) == {"product", "feature", "milestone", "program"}
+    assert any(v.get("type") == "null" for v in variants)
+
+
+def test_output_schema_required_fields_match_model() -> None:
+    required = set(CLASSIFIER_OUTPUT_SCHEMA["schema"]["required"])
     assert required == {"is_launch", "confidence", "launch_type", "reasoning"}

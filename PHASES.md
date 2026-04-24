@@ -57,7 +57,7 @@ Companion to `PLAN.md`. That document captured *what* to build and *why*; this o
 **Goal.** A runnable repo skeleton with env handling, dependency management, and a Streamlit "hello world" that launches.
 
 **Tasks:**
-1. `pyproject.toml` with `uv` or `poetry`. Deps: `anthropic`, `streamlit`, `pydantic`, `httpx`, `sqlite-utils` (or raw `sqlite3`), `python-dotenv`.
+1. `pyproject.toml` with `uv` or `poetry`. Deps: `openai`, `streamlit`, `pydantic`, `httpx`, `sqlite-utils` (or raw `sqlite3`), `python-dotenv`.
 2. Directory layout:
    ```
    /
@@ -79,7 +79,7 @@ Companion to `PLAN.md`. That document captured *what* to build and *why*; this o
      PHASES.md
      README.md
    ```
-3. `.env.example` with `ANTHROPIC_API_KEY`, `PH_DEVELOPER_TOKEN` (Product Hunt).
+3. `.env.example` with `OPENAI_API_KEY`, `PH_DEVELOPER_TOKEN` (Product Hunt).
 4. `.gitignore`: `.env`, `data/db.sqlite`, `__pycache__`, `.venv`.
 5. `make run-agent` and `make dashboard` targets, or equivalent `uv run` scripts.
 
@@ -134,7 +134,7 @@ Companion to `PLAN.md`. That document captured *what* to build and *why*; this o
    - System prompt grounded in the definition.
    - 4–6 few-shot examples drawn from the reference posts (positive).
    - 4–6 negative examples (product updates, memes, retweets, plain marketing, company news without a launch).
-   - Output schema: `{is_launch: bool, confidence: 0.0-1.0, reasoning: str, launch_type: "product"|"feature"|"milestone"|null}`.
+   - Output schema: `{is_launch: bool, confidence: 0.0-1.0, reasoning: str, launch_type: "product"|"feature"|"milestone"|"program"|null}`. (`"program"` covers YC-style batch/cohort announcements — see `docs/launch_definition.md` §2.)
 4. Build `evals/launch_classifier.jsonl`: the reference posts + ~10 hand-labeled negatives. Include a small script that runs the classifier over the eval set and prints precision/recall. Doesn't need to be rigorous — even 20 examples is enough to prove the methodology.
 5. Expose as a tool `classify_launch(post_text: str, metadata: dict) -> ClassificationResult` usable by the main agent.
 
@@ -199,7 +199,7 @@ Companion to `PLAN.md`. That document captured *what* to build and *why*; this o
 **Time:** 2 hours
 **Prerequisites:** P1, P2, P3, P4
 
-**Goal.** The single script that ties everything together via `tool_use`. This is the AI-engineering centerpiece.
+**Goal.** The single script that ties everything together via function calling. This is the AI-engineering centerpiece.
 
 **Tasks:**
 1. `src/agent/tools.py`: tool definitions for
@@ -209,7 +209,7 @@ Companion to `PLAN.md`. That document captured *what* to build and *why*; this o
    - `persist_launch(launch: Launch)`
    - `persist_funding(round: FundingRound)`
    Each with a strict JSON schema matching the Pydantic model.
-2. `src/agent/orchestrator.py`: main loop using Anthropic messages API. System prompt instructs the agent to:
+2. `src/agent/orchestrator.py`: main loop using the OpenAI Chat Completions API. System prompt instructs the agent to:
    - Call each source tool once
    - Pipe each post through `classify_launch` before persisting
    - Report a summary at the end (counts per source, classification stats)
@@ -331,5 +331,5 @@ The North Star: **a working demo of ingestion + classification + dashboard** is 
 ## Inputs Needed Before Starting
 
 1. **The X posts you mentioned** — links or text. These power Phase 2 (definition + few-shot examples + eval set) and Phase 4 (mock realism). Without them, Phase 2 falls back to a generic launch definition, which works but loses the "grounded in real examples" angle.
-2. **Any prior Anthropic API key / rate-limit constraints** — affects whether the orchestrator can run freely or needs aggressive caching.
+2. **Any prior OpenAI API key / rate-limit constraints** — affects whether the orchestrator can run freely or needs aggressive caching.
 3. **Preferred Python tooling** — `uv` vs `poetry` vs plain venv. Defaults to `uv` in this plan.

@@ -49,7 +49,7 @@ The assessment lists X, LinkedIn, Crunchbase, Google, and YC. Each was evaluated
 | **YCombinator** | ⚠️ **Best-effort real** | Public companies directory is scrape-able (`ycombinator.com/companies`). Will attempt if time remains; otherwise mocked. |
 | **Google funding announcements** | ❌ **Mocked** | Vague source; no canonical API. Would realistically be a web search + extraction agent — interesting but too open-ended for the timebox. |
 
-**Mock strategy.** Mocks are not hand-written stubs. A Claude prompt generates ~40 realistic fundraise records and ~20 X/LinkedIn launch records as a JSON seed file (company, round, amount, date, investors, post copy, engagement counts). Every mocked row is flagged with a `source: "mock"` field and rendered with a visible badge in the dashboard. The ingestion interface is source-agnostic — swapping a mock loader for a real API client is ≤ 20 LOC per source.
+**Mock strategy.** Mocks are not hand-written stubs. An LLM prompt generates ~40 realistic fundraise records and ~20 X/LinkedIn launch records as a JSON seed file (company, round, amount, date, investors, post copy, engagement counts). Every mocked row is flagged with a `source: "mock"` field and rendered with a visible badge in the dashboard. The ingestion interface is source-agnostic — swapping a mock loader for a real API client is ≤ 20 LOC per source.
 
 **Why transparency over a convincing fake.** A reviewer who spots undisclosed mock data loses trust in the whole deliverable. A reviewer who sees *explicitly-labeled* mocks alongside a clean source-adapter interface reads it as scope discipline. Same hours, very different signal.
 
@@ -60,7 +60,7 @@ The assessment lists X, LinkedIn, Crunchbase, Google, and YC. Each was evaluated
 │  run_agent.py      │   Scheduled / manual trigger
 │  (agent orchestr.) │
 └────────┬───────────┘
-         │ tool_use
+         │ function calls
   ┌──────┼──────┬──────────┬───────────┐
   ▼      ▼      ▼          ▼           ▼
  PH    HN Algolia  mock_x   mock_li   mock_cb
@@ -80,7 +80,7 @@ The assessment lists X, LinkedIn, Crunchbase, Google, and YC. Each was evaluated
 
 **Components:**
 
-- **Agent orchestrator** — single Python script. Uses Anthropic messages API with `tool_use`. One tool per data source + enrichment + DM-draft tools. System prompt and per-tool schemas defined in `prompts/` as versioned markdown.
+- **Agent orchestrator** — single Python script. Uses the OpenAI Chat Completions API with function calling (and Structured Outputs where the response itself *is* the payload, as in the launch classifier). One tool per data source + enrichment + DM-draft tools. System prompt and per-tool schemas defined in `prompts/` as versioned markdown.
 - **Persistence** — SQLite, single file. Tables: `company`, `launch`, `funding_round`, `contact`, `dm_draft`. Each table has a `source` and `raw_payload` JSON column (same pattern as a `sync_summary` JSONB approach on Postgres — preserves source fidelity for debugging).
 - **Dashboard** — Streamlit, single file. Reads SQLite directly. Sortable table of companies with joined funding + engagement, filter controls (source, date range, round size), per-row expander showing enriched contacts and draft DM.
 - **Enrichment step** — second agent pass, per row. Tools: `find_email`, `find_phone`, `find_linkedin`, `find_x_handle`. Real calls mocked for this exercise (Hunter.io / Apollo.io free tiers would be the production swap).
@@ -109,9 +109,9 @@ Each of these is a real day of work minimum. Spending any of them in the 2-day w
 | Hour | Task |
 |---|---|
 | 1 | Repo scaffold, `pyproject.toml`, `.env.example`, Streamlit hello-world, SQLite schema + init script |
-| 2 | Mock seed data generation (one Claude prompt producing JSON), loader functions for mocked sources |
+| 2 | Mock seed data generation (one LLM prompt producing JSON), loader functions for mocked sources |
 | 3 | Product Hunt tool: GraphQL query, Pydantic response model, agent tool definition |
-| 4 | Agent orchestrator: messages API loop with `tool_use`, structured writes to SQLite |
+| 4 | Agent orchestrator: Chat Completions loop with function calling, structured writes to SQLite |
 | 5 | Hacker News tool (if time); otherwise extra polish on PH |
 | 6 | Enrichment agent pass: 4 tools (email, phone, LinkedIn, X), mocked backends, persisted to `contact` table |
 | 7 | DM-draft agent: prompt engineering, tone variants, threshold logic, persisted to `dm_draft` table |
@@ -127,7 +127,7 @@ Each of these is a real day of work minimum. Spending any of them in the 2-day w
 ## 9. What This Plan Demonstrates
 
 - **Scope judgment.** Explicit decisions about what to build, mock, and omit — with reasoning a senior reviewer can evaluate.
-- **AI engineering fundamentals.** Multi-step agent with `tool_use`, structured outputs via Pydantic, prompts as versioned artifacts, chained LLM operations.
+- **AI engineering fundamentals.** Multi-step agent with function calling, Pydantic-validated Structured Outputs, prompts as versioned artifacts, chained LLM operations.
 - **Awareness of production gaps.** Non-goals section shows I know what a real version needs; I just didn't pretend to build it in 2 days.
 - **Communication.** README + Loom convert tradeoffs into evidence, not excuses.
 
