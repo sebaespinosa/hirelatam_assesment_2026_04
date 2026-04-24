@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Solo 2-day take-home assessment for HireLatam. The plan lives in [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how, in order); where code exists it is the source of truth and the plan docs are historical context.
 
-**Phase progress:** P0 (scaffold) ✅ and P1 (data model + persistence) ✅ done. P2–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world; the SQLite schema, Pydantic models, repo helpers, and init script are wired up with a round-trip test suite in `tests/`.
+**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅. P3–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world. The launch definition lives at [docs/launch_definition.md](docs/launch_definition.md); the versioned system prompt at [prompts/launch_classifier.md](prompts/launch_classifier.md); the classifier backend in [src/classifier/](src/classifier/) with an Anthropic-forced-tool-use implementation and a stub-backed test suite; eval runner at [evals/run_classifier.py](evals/run_classifier.py).
 
 Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusions) before proposing changes — scope is intentionally narrow and several "obvious" improvements (FastAPI, Postgres, Docker, observability, real LinkedIn/X integration) have been explicitly ruled out for the timebox. Don't reintroduce them without discussion.
 
@@ -78,6 +78,7 @@ Tooling is `uv` with Python ≥ 3.11. `uv.lock` is committed for reviewer reprod
 |---|---|---|
 | Install deps | `make install` | `uv sync` |
 | Init / reset DB | `make init-db` | `uv run python -m src.db.init` |
+| Run classifier eval | `make eval-classifier` | `uv run python -m evals.run_classifier` |
 | Run dashboard | `make dashboard` | `uv run streamlit run dashboard.py` |
 | Run agent | `make run-agent` | `uv run python run_agent.py` |
 | Tests | `make test` | `uv run pytest` |
@@ -98,6 +99,29 @@ The plan has explicit cut points ([PHASES.md §Contingency & Cut Points](PHASES.
 
 > A working demo of ingestion + classification + dashboard is a pass. Ingestion + classification + enrichment + DM + polished Loom is a hire signal. Don't trade the first for a shot at the second.
 
-## Phase 2 needs user input
+## Classifier eval set needs manual paste
 
-The launch classifier is grounded in reference X posts the user plans to provide. Without them, the classifier falls back to a generic definition — still works, but loses the "grounded in real examples" angle. If you're about to implement Phase 2 and haven't seen reference posts in the conversation, ask before writing the definition.
+[evals/launch_classifier.jsonl](evals/launch_classifier.jsonl) ships with 31 positive placeholders (`post_text: "[PASTE TEXT]"`) and 12 hand-crafted negatives. X blocks automated fetching and has no free API, so the positives require manual pasting from the browser — see [evals/README.md](evals/README.md) for the procedure. Until the positives are filled in, `python -m evals.run_classifier` only evaluates negatives; the `eval-classifier` target will silently skip placeholder entries with a "Skipped: N" line in the report. Do not fabricate post text — paste from the source URLs only.
+
+`pos_016` has a known-malformed X URL (truncated status ID); either fix it or delete the entry before running the full eval.
+
+## Classifier invariants
+
+- **Forced tool use, not free-form JSON.** [src/classifier/classify.py](src/classifier/classify.py) calls Anthropic with `tool_choice={"type": "tool", "name": "record_classification"}` so the model can only respond via the tool. Schema adherence is enforced by the API rather than parsed after the fact.
+- **Prompt caching on the system block.** The system prompt is sent with `cache_control: {"type": "ephemeral"}`. 40+ calls in a single eval run share one cache entry.
+- **Backend injection for tests.** `classify_launch(..., backend=StubBackend(response))` bypasses Anthropic entirely. No test should hit the network.
+- **Cross-field invariant on `ClassificationResult`.** `launch_type` must be non-null iff `is_launch` is true — enforced by a Pydantic `@model_validator`. Don't relax this; the dashboard and DM-draft pass rely on it.
+- **System prompt lives in markdown, not Python.** [src/classifier/prompt.py](src/classifier/prompt.py) loads [prompts/launch_classifier.md](prompts/launch_classifier.md) and strips the metadata header below `## System Prompt`. Never inline the prompt as a Python string.
+- **Default model is `claude-haiku-4-5`.** Classification is high-volume pattern-match; Haiku is the cost-appropriate choice. Override via `AnthropicBackend(model=...)` if accuracy regresses on the eval set.
+
+## Classifier metrics targets
+
+From [docs/launch_definition.md](docs/launch_definition.md) §7. Enforced by [evals/run_classifier.py](evals/run_classifier.py) — it exits non-zero if any target is missed.
+
+| Metric | Target | Why |
+|---|---|---|
+| Precision on positives | ≥ 0.90 | False positives pollute the dashboard and waste DM-draft budget |
+| Recall on positives | ≥ 0.85 | Some miss is acceptable; low-confidence items can surface separately |
+| Negative accuracy | ≥ 0.90 | Rejecting commentary / teasers / updates is the classifier's main value-add |
+
+When a metric regresses: iterate on the few-shot examples in [prompts/launch_classifier.md](prompts/launch_classifier.md), not on the prose rules. Replace weak examples instead of appending — prompt length affects latency and cost per call at scale.

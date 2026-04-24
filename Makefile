@@ -1,10 +1,13 @@
-.PHONY: install init-db run-agent dashboard test lint fmt clean
+.PHONY: install init-db eval-classifier run-agent dashboard test lint fmt clean
 
 install:
 	uv sync
 
 init-db:
 	uv run python -m src.db.init
+
+eval-classifier:
+	uv run python -m evals.run_classifier
 
 run-agent:
 	uv run python run_agent.py
