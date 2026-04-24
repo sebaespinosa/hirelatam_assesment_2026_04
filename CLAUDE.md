@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-This repo is a solo 2-day take-home assessment for HireLatam. At the time of writing it contains **only planning documents** — [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how to build it, in order). No source code, `pyproject.toml`, or tooling has been committed yet. If you are reading this before Phase 0 is done, treat the plan docs as the source of truth; if code exists, the code is the source of truth and the plan docs are historical context.
+Solo 2-day take-home assessment for HireLatam. The plan lives in [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how, in order); where code exists it is the source of truth and the plan docs are historical context.
+
+**Phase progress:** P0 (scaffold) ✅ and P1 (data model + persistence) ✅ done. P2–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world; the SQLite schema, Pydantic models, repo helpers, and init script are wired up with a round-trip test suite in `tests/`.
 
 Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusions) before proposing changes — scope is intentionally narrow and several "obvious" improvements (FastAPI, Postgres, Docker, observability, real LinkedIn/X integration) have been explicitly ruled out for the timebox. Don't reintroduce them without discussion.
 
@@ -12,10 +14,10 @@ Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusio
 
 A reviewer-facing demo with four moving parts, in order of importance:
 
-1. **Agent orchestrator** ([src/agent/orchestrator.py](src/agent/orchestrator.py), planned) — single Python script using the Anthropic messages API with `tool_use`. One tool per data source + classifier + persistence + enrichment + DM draft. This is the AI-engineering centerpiece the reviewer is evaluating.
-2. **Launch classifier** ([prompts/launch_classifier.md](prompts/launch_classifier.md), planned) — prompt-based filter that turns the pipeline from "firehose ingester" into "intent-aware curator". Has a small eval set at [evals/launch_classifier.jsonl](evals/launch_classifier.jsonl). See [PHASES.md §Phase 2](PHASES.md).
-3. **Streamlit dashboard** ([dashboard.py](dashboard.py), planned) — read-only UI over SQLite. Tabs: main dashboard + agent run log viewer (the run log viewer is what sells the AI-engineering story — don't drop it).
-4. **README + Loom** — tradeoff communication is part of the deliverable, not documentation of it.
+1. **Agent orchestrator** (`src/agent/orchestrator.py`, Phase 5) — single Python script using the Anthropic messages API with `tool_use`. One tool per data source + classifier + persistence + enrichment + DM draft. This is the AI-engineering centerpiece the reviewer is evaluating.
+2. **Launch classifier** (`prompts/launch_classifier.md`, Phase 2) — prompt-based filter that turns the pipeline from "firehose ingester" into "intent-aware curator". Has a small eval set at `evals/launch_classifier.jsonl`. See [PHASES.md §Phase 2](PHASES.md).
+3. **Streamlit dashboard** ([dashboard.py](dashboard.py), Phase 8 — currently a hello-world) — read-only UI over SQLite. Tabs: main dashboard + agent run log viewer (the run log viewer is what sells the AI-engineering story — don't drop it).
+4. **README + Loom** (Phase 9) — tradeoff communication is part of the deliverable, not documentation of it.
 
 ## Architecture invariants
 
@@ -46,31 +48,49 @@ Decided in [PLAN.md §5](PLAN.md). Summary so you don't have to re-read it:
 
 Mocks are **generated once** via a Claude prompt ([prompts/mock_generator.md](prompts/mock_generator.md), planned) and saved to `data/seed/*.json`. Do not regenerate per-run.
 
-## Planned layout (from [PHASES.md §Phase 0](PHASES.md))
+## Layout
+
+Scaffolded in Phase 0. Subpackages exist as empty `__init__.py` modules — populate them in the phase noted.
 
 ```
-run_agent.py            # agent CLI entrypoint
-dashboard.py            # streamlit entry
+run_agent.py            # agent CLI entrypoint (stub — Phase 5)
+dashboard.py            # streamlit entry (hello-world — Phase 8)
 src/
-  agent/                # orchestrator + tool defs + thresholds
-  sources/              # one module per source (producthunt, hn, mock_x, ...)
-  models/               # pydantic schemas
-  db/                   # schema.sql, repo.py, init script
-  classifier/           # launch classifier wrapper
-prompts/                # versioned .md prompts
-evals/                  # jsonl eval sets
+  agent/                # orchestrator + tool defs + thresholds (Phase 5/7)
+  sources/              # one module per source: producthunt, hn, mock_x, ... (Phase 3/4)
+  models/               # pydantic schemas (Phase 1)
+  db/                   # schema.sql, repo.py, init script (Phase 1)
+  classifier/           # launch classifier wrapper (Phase 2)
+prompts/                # versioned .md prompts (Phase 2/4/5/7)
+evals/                  # jsonl eval sets (Phase 2)
 data/
-  seed/                 # mock JSON seed files (committed)
-  runs/                 # agent turn logs (gitignored)
-  db.sqlite             # gitignored
-docs/                   # launch_definition.md, etc.
+  seed/                 # mock JSON seed files (committed, Phase 4)
+  runs/                 # agent turn logs (gitignored, Phase 5)
+  db.sqlite             # gitignored (Phase 1)
+docs/                   # launch_definition.md, etc. (Phase 2)
 ```
 
 ## Commands
 
-**Not yet wired up.** Phase 0 plans `uv` for dependency management; the expected happy path is roughly `uv sync && cp .env.example .env && python -m src.db.init && python run_agent.py && streamlit run dashboard.py`. Do not take these as working — check `pyproject.toml` and any `Makefile`/`justfile` before running anything, and update this section once Phase 0 lands.
+Tooling is `uv` with Python ≥ 3.11. `uv.lock` is committed for reviewer reproducibility. `[tool.uv] package = false` in [pyproject.toml](pyproject.toml) — this is an application, not a library; nothing gets installed from `src/`, so module invocation works via the uv-managed venv's `sys.path`.
 
-Deps planned: `anthropic`, `streamlit`, `pydantic`, `httpx`, `sqlite-utils` (or stdlib `sqlite3`), `python-dotenv`.
+| Task | Make target | Direct uv |
+|---|---|---|
+| Install deps | `make install` | `uv sync` |
+| Init / reset DB | `make init-db` | `uv run python -m src.db.init` |
+| Run dashboard | `make dashboard` | `uv run streamlit run dashboard.py` |
+| Run agent | `make run-agent` | `uv run python run_agent.py` |
+| Tests | `make test` | `uv run pytest` |
+| Lint | `make lint` | `uv run ruff check .` |
+| Format | `make fmt` | `uv run ruff format .` |
+
+`python -m src.db.init` drops `data/db.sqlite` and replays [src/db/schema.sql](src/db/schema.sql). Pass `--keep` to apply idempotently, or `--db-path` to target a different file. The `data/db.sqlite` file is gitignored.
+
+**Single test:** `uv run pytest path/to/test_file.py::test_name` or `uv run pytest -k <pattern>`.
+
+Deps in [pyproject.toml](pyproject.toml): runtime — `anthropic`, `streamlit`, `pydantic`, `httpx`, `python-dotenv`; dev — `pytest`, `ruff`. No `sqlite-utils`; the DB layer will use the stdlib `sqlite3` module (Phase 1 decision — fewer deps, same ergonomics for this scope).
+
+Ruff config in [pyproject.toml](pyproject.toml): line length 100, rule set `E,F,I,UP,B,SIM`, target `py311`.
 
 ## Scope discipline
 

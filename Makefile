@@ -1,7 +1,10 @@
-.PHONY: install run-agent dashboard test lint fmt clean
+.PHONY: install init-db run-agent dashboard test lint fmt clean
 
 install:
 	uv sync
+
+init-db:
+	uv run python -m src.db.init
 
 run-agent:
 	uv run python run_agent.py
