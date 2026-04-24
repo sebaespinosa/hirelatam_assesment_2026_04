@@ -1,4 +1,4 @@
-.PHONY: install init-db eval-classifier ingest-ph ingest-mocks generate-mocks run-agent run-enrichment dashboard test lint fmt clean
+.PHONY: install init-db eval-classifier ingest-ph ingest-mocks generate-mocks run-agent run-enrichment run-dm-drafts dashboard test lint fmt clean
 
 install:
 	uv sync
@@ -23,6 +23,9 @@ run-agent:
 
 run-enrichment:
 	uv run python run_enrichment.py
+
+run-dm-drafts:
+	uv run python run_dm_drafts.py
 
 dashboard:
 	uv run streamlit run dashboard.py
