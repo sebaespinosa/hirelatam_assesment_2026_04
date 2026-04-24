@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Solo 2-day take-home assessment for HireLatam. The plan lives in [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how, in order); where code exists it is the source of truth and the plan docs are historical context.
 
-**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅, P4 (mock sources) ✅. P5–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world. Classifier + eval: [src/classifier/](src/classifier/), [evals/run_classifier.py](evals/run_classifier.py). Sources: [src/sources/producthunt.py](src/sources/producthunt.py) (real), [src/sources/mocks.py](src/sources/mocks.py) (loader for all four mock sources), [src/sources/mock_generator.py](src/sources/mock_generator.py) (one-shot seed generator).
+**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅, P4 (mock sources) ✅, P5 (agent orchestrator) ✅. P6–P9 not started. `dashboard.py` is still a Streamlit hello-world. Classifier + eval: [src/classifier/](src/classifier/), [evals/run_classifier.py](evals/run_classifier.py). Sources: [src/sources/producthunt.py](src/sources/producthunt.py) (real), [src/sources/mocks.py](src/sources/mocks.py), [src/sources/mock_generator.py](src/sources/mock_generator.py). Orchestrator: [src/agent/](src/agent/) with [run_agent.py](run_agent.py) as CLI; system prompt at [prompts/orchestrator.md](prompts/orchestrator.md); turn-by-turn JSONL logs in `data/runs/`.
 
 Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusions) before proposing changes — scope is intentionally narrow and several "obvious" improvements (FastAPI, Postgres, Docker, observability, real LinkedIn/X integration) have been explicitly ruled out for the timebox. Don't reintroduce them without discussion.
 
@@ -121,6 +121,18 @@ The plan has explicit cut points ([PHASES.md §Contingency & Cut Points](PHASES.
 - **System prompt lives in markdown, not Python.** [src/classifier/prompt.py](src/classifier/prompt.py) loads [prompts/launch_classifier.md](prompts/launch_classifier.md) and strips the metadata header below `## System Prompt`. Never inline the prompt as a Python string.
 - **Default model is `gpt-4o-mini`.** Classification is high-volume pattern-match; `gpt-4o-mini` is the cost-appropriate choice (also reliably available on any active OpenAI account). Override via `OpenAIBackend(model=...)` if accuracy regresses on the eval set.
 - **Strict-mode schema caveat.** OpenAI `strict: true` ignores `minimum`/`maximum`/`minLength` constraints on JSON Schema primitives. Range/length validation happens in the Pydantic `ClassificationResult` after parsing — belt and suspenders, don't remove either layer.
+
+## Orchestrator invariants
+
+- **Agent routes, code writes.** The agent never emits SQL, never constructs a Pydantic model by name. It passes dicts to `persist_launch`/`persist_funding`/`persist_company` and the handlers validate + write. Phase 1 principle — don't weaken it.
+- **Bundle-shaped persist calls.** `persist_launch({company, launch, classification})` upserts the company internally. The agent never needs to know a `company_id`. Same for `persist_funding({company, funding})`.
+- **`persist_launch` refuses `is_launch=false` items.** Belt-and-suspenders enforcement of "classify before persist." If the policy check fires, it's almost always a prompt regression.
+- **Every tool handler returns a dict; Pydantic failures surface as `{"error": ..., "code": "validation_error"}`.** The agent self-corrects once per item (per the prompt's retry rule), then skips. Handlers never raise into the orchestrator loop.
+- **Turn-by-turn JSONL logs go to `data/runs/{timestamp}.jsonl`.** Events: `run_start`, `assistant`, `tool_call`, `finish`, `max_turns_reached`. The Phase 8 dashboard reads the latest file as its "Agent Run Log" tab — don't strip log lines to clean up noise; the log is a demo artifact.
+- **Default orchestrator model is `gpt-4o`, not `gpt-4o-mini`.** Mini truncates parallel tool-call fan-out and silently skips entire sources on runs of this size (verified empirically: processes 19 of 55 social posts and hallucinates summary counts). `gpt-4o` follows the prompt's per-source sequencing reliably. Classifier stays on `gpt-4o-mini` — per-call, high volume, no multi-step reasoning needed. End-to-end run: ~4 min, ~141 tool calls, ~a few cents in OpenAI spend.
+- **System prompt enforces per-source sequencing**, not a giant parallel fan-out. Turn 1 fetches all sources in parallel; subsequent turns process one source at a time. Parallelism is *within* each source only.
+- **Agent's self-reported summary counts from tool results, not memory.** The prompt is explicit about this. Dashboard KPI tiles will eventually cross-check against `SELECT COUNT(*)`; until then, trust the JSONL log over the final summary text if they disagree.
+- **Run-log viewer is non-negotiable.** It is what sells the AI-engineering story in the Loom walkthrough. Don't let dashboard scope creep remove it.
 
 ## Source adapter invariants
 
