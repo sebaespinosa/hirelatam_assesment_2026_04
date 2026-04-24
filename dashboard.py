@@ -35,7 +35,10 @@ st.set_page_config(
 
 @st.cache_resource
 def _conn():
-    return get_connection()
+    # check_same_thread=False: Streamlit uses a fresh thread per rerun, and
+    # @st.cache_resource holds one connection across all of them. Safe because
+    # the dashboard is read-only and single-user.
+    return get_connection(check_same_thread=False)
 
 
 conn = _conn()
@@ -97,7 +100,7 @@ def _render_dashboard_tab() -> None:
         st.info("No data matches the selected filters.")
         return
 
-    st.dataframe(_rows_to_table(rows), use_container_width=True, hide_index=True)
+    st.dataframe(_rows_to_table(rows), width="stretch", hide_index=True)
 
     st.divider()
     st.subheader("Company detail")
@@ -166,7 +169,7 @@ def _render_company_detail(row: DashboardRow) -> None:
             st.info("No funding rounds.")
         else:
             df = pd.DataFrame(detail.funding_rounds)
-            st.dataframe(df, use_container_width=True, hide_index=True)
+            st.dataframe(df, width="stretch", hide_index=True)
 
     with contacts_tab:
         if not detail.contacts:

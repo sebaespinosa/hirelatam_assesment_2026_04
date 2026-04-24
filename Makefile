@@ -1,4 +1,4 @@
-.PHONY: install init-db eval-classifier ingest-ph ingest-mocks generate-mocks run-agent run-enrichment run-dm-drafts dashboard test lint fmt clean
+.PHONY: install init-db eval-classifier ingest-ph ingest-mocks generate-mocks run-agent run-enrichment run-dm-drafts demo dashboard test lint fmt clean
 
 install:
 	uv sync
@@ -26,6 +26,10 @@ run-enrichment:
 
 run-dm-drafts:
 	uv run python run_dm_drafts.py
+
+demo: init-db run-agent run-enrichment run-dm-drafts
+	@echo ""
+	@echo "✓ Pipeline complete. Run 'make dashboard' to view at http://localhost:8501."
 
 dashboard:
 	uv run streamlit run dashboard.py
