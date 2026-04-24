@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Solo 2-day take-home assessment for HireLatam. The plan lives in [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how, in order); where code exists it is the source of truth and the plan docs are historical context.
 
-**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅. P3–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world. The launch definition lives at [docs/launch_definition.md](docs/launch_definition.md); the versioned system prompt at [prompts/launch_classifier.md](prompts/launch_classifier.md); the classifier backend in [src/classifier/](src/classifier/) with an Anthropic-forced-tool-use implementation and a stub-backed test suite; eval runner at [evals/run_classifier.py](evals/run_classifier.py).
+**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅. P4–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world. The launch definition lives at [docs/launch_definition.md](docs/launch_definition.md); the versioned system prompt at [prompts/launch_classifier.md](prompts/launch_classifier.md); the classifier backend in [src/classifier/](src/classifier/); eval runner at [evals/run_classifier.py](evals/run_classifier.py); Product Hunt source at [src/sources/producthunt.py](src/sources/producthunt.py) (CLI: `make ingest-ph`).
 
 Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusions) before proposing changes — scope is intentionally narrow and several "obvious" improvements (FastAPI, Postgres, Docker, observability, real LinkedIn/X integration) have been explicitly ruled out for the timebox. Don't reintroduce them without discussion.
 
@@ -79,6 +79,7 @@ Tooling is `uv` with Python ≥ 3.11. `uv.lock` is committed for reviewer reprod
 | Install deps | `make install` | `uv sync` |
 | Init / reset DB | `make init-db` | `uv run python -m src.db.init` |
 | Run classifier eval | `make eval-classifier` | `uv run python -m evals.run_classifier` |
+| Ingest Product Hunt | `make ingest-ph` | `uv run python -m src.sources.producthunt` |
 | Run dashboard | `make dashboard` | `uv run streamlit run dashboard.py` |
 | Run agent | `make run-agent` | `uv run python run_agent.py` |
 | Tests | `make test` | `uv run pytest` |
@@ -113,6 +114,15 @@ The plan has explicit cut points ([PHASES.md §Contingency & Cut Points](PHASES.
 - **Cross-field invariant on `ClassificationResult`.** `launch_type` must be non-null iff `is_launch` is true — enforced by a Pydantic `@model_validator`. Don't relax this; the dashboard and DM-draft pass rely on it.
 - **System prompt lives in markdown, not Python.** [src/classifier/prompt.py](src/classifier/prompt.py) loads [prompts/launch_classifier.md](prompts/launch_classifier.md) and strips the metadata header below `## System Prompt`. Never inline the prompt as a Python string.
 - **Default model is `claude-haiku-4-5`.** Classification is high-volume pattern-match; Haiku is the cost-appropriate choice. Override via `AnthropicBackend(model=...)` if accuracy regresses on the eval set.
+
+## Source adapter invariants
+
+- **Every source module exposes `ingest(*, conn, nodes, classify, persist, classify_fn)`.** The `classify_fn` parameter takes the Phase 2 `classify_launch` by default and accepts a fake for tests so no source-adapter test ever touches the real Anthropic client.
+- **`normalize_post`-style functions are pure.** They return `(Company, Launch)` with `launch.company_id = -1` as a placeholder; the ingest pipeline fills in the real id after `upsert_company`. Do not make the normalizer open a DB connection.
+- **`raw_payload` stores the full un-normalized node plus any derived fields.** The classifier result goes in as `raw_payload["_classification"]` so rejection reasoning survives the filter without a schema change.
+- **Snapshot fallback is per-source.** Each source that talks to a remote API saves its last successful response to `data/seed/<source>_snapshot.json` and falls back to it on any network failure. Snapshots are gitignored — treat them as local dev caches, not reviewer seed data.
+- **Non-launches are skipped at ingest, not stored.** The Launch table is semantically for launches. The Phase 5 orchestrator's agent run log will preserve rejection reasoning; ingestion-time logging is stdout-only for now.
+- **Dry-run mode (`--no-persist`) passes `conn=None` to `ingest`.** The function guards against `persist=True` with `conn=None` but happily dry-runs without a connection.
 
 ## Classifier metrics targets
 

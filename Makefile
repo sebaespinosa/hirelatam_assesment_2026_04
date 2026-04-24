@@ -1,4 +1,4 @@
-.PHONY: install init-db eval-classifier run-agent dashboard test lint fmt clean
+.PHONY: install init-db eval-classifier ingest-ph run-agent dashboard test lint fmt clean
 
 install:
 	uv sync
@@ -8,6 +8,9 @@ init-db:
 
 eval-classifier:
 	uv run python -m evals.run_classifier
+
+ingest-ph:
+	uv run python -m src.sources.producthunt
 
 run-agent:
 	uv run python run_agent.py

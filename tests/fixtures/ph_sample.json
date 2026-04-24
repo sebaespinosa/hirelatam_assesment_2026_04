@@ -1,0 +1,42 @@
+{
+  "captured_at": "2026-04-20T12:00:00+00:00",
+  "posts": [
+    {
+      "id": "ph-1",
+      "name": "Testlaunch",
+      "slug": "testlaunch",
+      "tagline": "A fake product for unit tests.",
+      "url": "https://www.producthunt.com/posts/testlaunch",
+      "votesCount": 42,
+      "commentsCount": 5,
+      "createdAt": "2026-04-19T10:00:00Z",
+      "topics": {
+        "edges": [
+          {"node": {"name": "Developer Tools"}},
+          {"node": {"name": "Productivity"}}
+        ]
+      },
+      "makers": [
+        {"id": "u1", "name": "Ada Lovelace", "username": "ada"},
+        {"id": "u2", "name": "Alan Turing", "username": "alan"}
+      ],
+      "media": [
+        {"url": "https://example.test/hero.png", "type": "image"},
+        {"url": "https://example.test/demo.mp4", "type": "video"}
+      ]
+    },
+    {
+      "id": "ph-2",
+      "name": "Minimal",
+      "slug": "minimal",
+      "tagline": "Minimal fields only.",
+      "url": "https://www.producthunt.com/posts/minimal",
+      "votesCount": 0,
+      "commentsCount": 0,
+      "createdAt": "2026-04-18T08:30:00Z",
+      "topics": {"edges": []},
+      "makers": [],
+      "media": []
+    }
+  ]
+}
