@@ -1,0 +1,222 @@
+[
+  {
+    "source_id": "mock_x_001",
+    "handle": "@TechieJoe",
+    "post_text": "Excited to share our latest tool, DataForge! Now you can effortlessly transform raw data into actionable insights within minutes. Let the numbers do the talking! #DataScience #LaunchDay",
+    "likes": 134,
+    "reposts": 23,
+    "posted_at": "2026-03-15T14:30:00Z",
+    "media": "link",
+    "company_name": "DataForge",
+    "company_website": "https://dataforge.example.com"
+  },
+  {
+    "source_id": "mock_x_002",
+    "handle": "@StartupGuru",
+    "post_text": "Today we're launching EcoNest, the app to find sustainable products tailored just for you! Join the movement towards greener choices! #Sustainability #Launch",
+    "likes": 672,
+    "reposts": 105,
+    "posted_at": "2026-04-01T09:45:00Z",
+    "media": "image",
+    "company_name": "EcoNest",
+    "company_website": "https://econest.example.com"
+  },
+  {
+    "source_id": "mock_x_003",
+    "handle": "@DevMaster",
+    "post_text": "Meet CodeMatic! Our AI-driven code review tool that speeds up your development and reduces bugs. Get ready to boost your productivity! #DevTools #TechLaunch",
+    "likes": 2895,
+    "reposts": 301,
+    "posted_at": "2026-03-20T11:00:00Z",
+    "media": "video",
+    "company_name": "CodeMatic",
+    "company_website": "https://codematic.example.com"
+  },
+  {
+    "source_id": "mock_x_004",
+    "handle": "@FintechFan",
+    "post_text": "Introducing CapitalHawk! The automated financial advisor that helps you manage your investments smartly and simply. Change the way you invest! #Fintech #InvestSmart",
+    "likes": 410,
+    "reposts": 58,
+    "posted_at": "2026-04-10T12:15:00Z",
+    "media": "screenshot",
+    "company_name": "CapitalHawk",
+    "company_website": "https://capitalhawk.example.com"
+  },
+  {
+    "source_id": "mock_x_005",
+    "handle": "@HealthHero",
+    "post_text": "Now live! HealthSphere is your personalized health tracking platform, integrating data from wearables to help you stay fit and healthy! #HealthTech #Launch",
+    "likes": 850,
+    "reposts": 150,
+    "posted_at": "2026-04-05T08:20:00Z",
+    "media": "link",
+    "company_name": "HealthSphere",
+    "company_website": "https://healthsphere.example.com"
+  },
+  {
+    "source_id": "mock_x_006",
+    "handle": "@CreatorCollective",
+    "post_text": "Exciting news! We're launching Creatify, a platform for creators to monetize their work dynamically! Join us and unleash your potential! #CreatorEconomy #LaunchDay",
+    "likes": 2453,
+    "reposts": 450,
+    "posted_at": "2026-04-02T16:30:00Z",
+    "media": "image",
+    "company_name": "Creatify",
+    "company_website": "https://creatify.example.com"
+  },
+  {
+    "source_id": "mock_x_007",
+    "handle": "@GreenTechie",
+    "post_text": "Introducing SolarSync, an app that helps you track solar energy production and savings! Going green has never been easier! #GreenTech #Launch",
+    "likes": 175,
+    "reposts": 25,
+    "posted_at": "2026-03-18T07:40:00Z",
+    "media": "video",
+    "company_name": "SolarSync",
+    "company_website": "https://solarsync.example.com"
+  },
+  {
+    "source_id": "mock_x_008",
+    "handle": "@B2BInnovator",
+    "post_text": "Today we're launching MarketPulse, the analytics tool that gives B2B marketers a competitive edge with real-time insights. Don't miss out! #B2B #Analytics",
+    "likes": 312,
+    "reposts": 54,
+    "posted_at": "2026-04-14T10:00:00Z",
+    "media": "screenshot",
+    "company_name": "MarketPulse",
+    "company_website": "https://marketpulse.example.com"
+  },
+  {
+    "source_id": "mock_x_009",
+    "handle": "@FoodieFinder",
+    "post_text": "We’re thrilled to announce TableScout, the app that helps you discover trending restaurants in your area! Ready for your next great meal? #FoodLaunch #Eats",
+    "likes": 911,
+    "reposts": 175,
+    "posted_at": "2026-03-22T15:45:00Z",
+    "media": "image",
+    "company_name": "TableScout",
+    "company_website": "https://tablescout.example.com"
+  },
+  {
+    "source_id": "mock_x_010",
+    "handle": "@InnovateAI",
+    "post_text": "Meet InsightX, your go-to AI assistant for decision-making and workflow optimization. Benefit from data-driven decisions today! #AI #Productivity",
+    "likes": 1237,
+    "reposts": 250,
+    "posted_at": "2026-03-27T13:10:00Z",
+    "media": "link",
+    "company_name": "InsightX",
+    "company_website": "https://insightx.example.com"
+  },
+  {
+    "source_id": "mock_x_011",
+    "handle": "@NextGenTech",
+    "post_text": "We're launching SnapAR, an augmented reality app that turns any space into a digital showroom! Experience the future of retail today. #AR #RetailInnovation",
+    "likes": 4572,
+    "reposts": 501,
+    "posted_at": "2026-04-15T18:00:00Z",
+    "media": "video",
+    "company_name": "SnapAR",
+    "company_website": "https://snapar.example.com"
+  },
+  {
+    "source_id": "mock_x_012",
+    "handle": "@FinSavvy",
+    "post_text": "Say hello to ProjectNest, the ultimate savings app that automates savings for your financial goals. Start saving smarter! #FinTechLaunch #Savings",
+    "likes": 350,
+    "reposts": 82,
+    "posted_at": "2026-03-30T14:30:00Z",
+    "media": "screenshot",
+    "company_name": "ProjectNest",
+    "company_website": "https://projectnest.example.com"
+  },
+  {
+    "source_id": "mock_x_013",
+    "handle": "@ElderCareInnovator",
+    "post_text": "Today we’re launching CareConnect! An app designed to streamline communication between caregivers and families. Empowering relationships in care! #ElderCare #Launch",
+    "likes": 620,
+    "reposts": 100,
+    "posted_at": "2026-04-08T11:35:00Z",
+    "media": "link",
+    "company_name": "CareConnect",
+    "company_website": "https://careconnect.example.com"
+  },
+  {
+    "source_id": "mock_x_014",
+    "handle": "@CreativeSpark",
+    "post_text": "Excited to share FlipStory, a tool that turns your ideas into captivating presentations in seconds! Elevate your storytelling! #DesignLaunch",
+    "likes": 731,
+    "reposts": 198,
+    "posted_at": "2026-04-12T09:15:00Z",
+    "media": "video",
+    "company_name": "FlipStory",
+    "company_website": "https://flipstory.example.com"
+  },
+  {
+    "source_id": "mock_x_015",
+    "handle": "@HealthTechAnn",
+    "post_text": "Introducing FitMonitor, the health app that tracks your workout progress with personalized plans! Let's get fit together! #Fitness #LaunchDay",
+    "likes": 158,
+    "reposts": 34,
+    "posted_at": "2026-03-19T10:20:00Z",
+    "media": "image",
+    "company_name": "FitMonitor",
+    "company_website": "https://fitmonitor.example.com"
+  },
+  {
+    "source_id": "mock_x_016",
+    "handle": "@DataDrivenOrg",
+    "post_text": "We are thrilled to announce LaunchMetrics, the platform that empowers brands to optimize their marketing strategies using deep analytics! #DataDriven #Innovate",
+    "likes": 901,
+    "reposts": 147,
+    "posted_at": "2026-04-20T17:40:00Z",
+    "media": "screenshot",
+    "company_name": "LaunchMetrics",
+    "company_website": "https://launchmetrics.example.com"
+  },
+  {
+    "source_id": "mock_x_017",
+    "handle": "@SmartHomeGadget",
+    "post_text": "Now live! Introducing HomeIQ, the smart home management system that learns your habits and optimizes your energy usage! Efficiency made easy! #SmartHome #Launch",
+    "likes": 482,
+    "reposts": 77,
+    "posted_at": "2026-04-09T11:05:00Z",
+    "media": "link",
+    "company_name": "HomeIQ",
+    "company_website": "https://homeiq.example.com"
+  },
+  {
+    "source_id": "mock_x_018",
+    "handle": "@DigiCreator",
+    "post_text": "Meet ContentWave, the app we've developed for creators to easily upload and distribute content across channels effortlessly! Let’s make waves! #CreatorTools #Launch",
+    "likes": 2073,
+    "reposts": 300,
+    "posted_at": "2026-04-07T13:15:00Z",
+    "media": "image",
+    "company_name": "ContentWave",
+    "company_website": "https://contentwave.example.com"
+  },
+  {
+    "source_id": "mock_x_019",
+    "handle": "@FinTechWizard",
+    "post_text": "Today we're launching LoanMate, the app that simplifies personal loan management and improves your borrowing experience. Get started now! #Fintech #Loans",
+    "likes": 439,
+    "reposts": 65,
+    "posted_at": "2026-03-16T10:50:00Z",
+    "media": "screenshot",
+    "company_name": "LoanMate",
+    "company_website": "https://loanmate.example.com"
+  },
+  {
+    "source_id": "mock_x_020",
+    "handle": "@TechAdventurer",
+    "post_text": "Introducing PixelPro, the photo editing app that packs powerful features into an easy-to-use interface. Unleash your creativity! #Photography #Launch",
+    "likes": 3125,
+    "reposts": 360,
+    "posted_at": "2026-04-03T15:25:00Z",
+    "media": "video",
+    "company_name": "PixelPro",
+    "company_website": "https://pixelpro.example.com"
+  }
+]

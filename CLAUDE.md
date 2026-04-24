@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Solo 2-day take-home assessment for HireLatam. The plan lives in [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how, in order); where code exists it is the source of truth and the plan docs are historical context.
 
-**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅. P4–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world. The launch definition lives at [docs/launch_definition.md](docs/launch_definition.md); the versioned system prompt at [prompts/launch_classifier.md](prompts/launch_classifier.md); the classifier backend in [src/classifier/](src/classifier/); eval runner at [evals/run_classifier.py](evals/run_classifier.py); Product Hunt source at [src/sources/producthunt.py](src/sources/producthunt.py) (CLI: `make ingest-ph`).
+**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅, P4 (mock sources) ✅. P5–P9 not started. `run_agent.py` is still a stub pointing to Phase 5; `dashboard.py` is still a Streamlit hello-world. Classifier + eval: [src/classifier/](src/classifier/), [evals/run_classifier.py](evals/run_classifier.py). Sources: [src/sources/producthunt.py](src/sources/producthunt.py) (real), [src/sources/mocks.py](src/sources/mocks.py) (loader for all four mock sources), [src/sources/mock_generator.py](src/sources/mock_generator.py) (one-shot seed generator).
 
 Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusions) before proposing changes — scope is intentionally narrow and several "obvious" improvements (FastAPI, Postgres, Docker, observability, real LinkedIn/X integration) have been explicitly ruled out for the timebox. Don't reintroduce them without discussion.
 
@@ -80,6 +80,8 @@ Tooling is `uv` with Python ≥ 3.11. `uv.lock` is committed for reviewer reprod
 | Init / reset DB | `make init-db` | `uv run python -m src.db.init` |
 | Run classifier eval | `make eval-classifier` | `uv run python -m evals.run_classifier` |
 | Ingest Product Hunt | `make ingest-ph` | `uv run python -m src.sources.producthunt` |
+| Ingest all mocks | `make ingest-mocks` | `uv run python -m src.sources.mocks` |
+| Regenerate mock seeds | `make generate-mocks` | `uv run python -m src.sources.mock_generator` |
 | Run dashboard | `make dashboard` | `uv run streamlit run dashboard.py` |
 | Run agent | `make run-agent` | `uv run python run_agent.py` |
 | Tests | `make test` | `uv run pytest` |
@@ -122,12 +124,15 @@ The plan has explicit cut points ([PHASES.md §Contingency & Cut Points](PHASES.
 
 ## Source adapter invariants
 
-- **Every source module exposes `ingest(*, conn, nodes, classify, persist, classify_fn)`.** The `classify_fn` parameter takes the Phase 2 `classify_launch` by default and accepts a fake for tests so no source-adapter test ever touches the real OpenAI client.
-- **`normalize_post`-style functions are pure.** They return `(Company, Launch)` with `launch.company_id = -1` as a placeholder; the ingest pipeline fills in the real id after `upsert_company`. Do not make the normalizer open a DB connection.
+- **Every source ingest signature takes `conn`, `classify`, `persist`, `classify_fn`, and a source-specific input (`nodes` for PH, `source` for mocks).** The `classify_fn` parameter takes the Phase 2 `classify_launch` by default and accepts a fake for tests so no source-adapter test ever touches the real OpenAI client.
+- **`normalize_*` functions are pure.** They return `(Company, Launch)`, `(Company, FundingRound)`, or `Company` with the company id as a `-1` placeholder; the ingest pipeline fills in the real id after `upsert_company`. Do not make the normalizer open a DB connection.
 - **`raw_payload` stores the full un-normalized node plus any derived fields.** The classifier result goes in as `raw_payload["_classification"]` so rejection reasoning survives the filter without a schema change.
-- **Snapshot fallback is per-source.** Each source that talks to a remote API saves its last successful response to `data/seed/<source>_snapshot.json` and falls back to it on any network failure. Snapshots are gitignored — treat them as local dev caches, not reviewer seed data.
+- **Snapshot fallback is per-source.** Each source that talks to a remote API saves its last successful response to `data/seed/<source>_snapshot.json` and falls back to it on any network failure. The `*_snapshot.json` glob is gitignored — treat them as local dev caches, not reviewer seed data.
+- **Mock seed files are committed** (`data/seed/mock_*.json`, not `*_snapshot.json`). Regenerate via `make generate-mocks` when the schema changes or content looks stale.
 - **Non-launches are skipped at ingest, not stored.** The Launch table is semantically for launches. The Phase 5 orchestrator's agent run log will preserve rejection reasoning; ingestion-time logging is stdout-only for now.
+- **Classifier runs on social sources only.** X + LinkedIn mocks pass through `classify_launch`; Crunchbase (structured fundraise data) and YC (batch directory entries) skip it. If you add a new source, decide at the dispatch layer (don't make the classifier handle non-post inputs).
 - **Dry-run mode (`--no-persist`) passes `conn=None` to `ingest`.** The function guards against `persist=True` with `conn=None` but happily dry-runs without a connection.
+- **Every CLI main() calls `load_dotenv()` first.** `uv run` does not auto-load `.env`. New CLI entrypoints must call it before reading `OPENAI_API_KEY` / `PH_DEVELOPER_TOKEN`.
 
 ## Classifier metrics targets
 

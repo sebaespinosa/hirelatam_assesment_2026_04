@@ -1,0 +1,363 @@
+[
+  {
+    "source_id": "mock_x_001",
+    "company_name": "FlexiCloud",
+    "company_website": "https://flexicloud.example.com",
+    "amount_usd": 1500000,
+    "round_type": "Seed",
+    "announced_at": "2026-02-01T10:00:00Z",
+    "investors": [
+      "Foundry Labs",
+      "Pioneer Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_002",
+    "company_name": "EcoTrack",
+    "company_website": "https://ecotrack.example.com",
+    "amount_usd": 3000000,
+    "round_type": "Series A",
+    "announced_at": "2026-01-15T12:30:00Z",
+    "investors": [
+      "GreenFund Capital",
+      "Sustainable Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_003",
+    "company_name": "PixelPipe",
+    "company_website": "https://pixelpipe.example.com",
+    "amount_usd": 500000,
+    "round_type": "Pre-seed",
+    "announced_at": "2026-03-10T15:00:00Z",
+    "investors": [
+      "Startup Grind",
+      "InnovateX"
+    ]
+  },
+  {
+    "source_id": "mock_x_004",
+    "company_name": "HealthSync",
+    "company_website": "https://healthsync.example.com",
+    "amount_usd": 7000000,
+    "round_type": "Seed",
+    "announced_at": "2026-03-20T08:45:00Z",
+    "investors": [
+      "HealthFirst Capital",
+      "Wellness Investment Group"
+    ]
+  },
+  {
+    "source_id": "mock_x_005",
+    "company_name": "CodeCraft",
+    "company_website": "https://codecraft.example.com",
+    "amount_usd": 12000000,
+    "round_type": "Series A",
+    "announced_at": "2026-01-30T11:15:00Z",
+    "investors": [
+      "TechStars Partners",
+      "BuildUp Capital"
+    ]
+  },
+  {
+    "source_id": "mock_x_006",
+    "company_name": "MoneyWise",
+    "company_website": "https://moneywise.example.com",
+    "amount_usd": 2000000,
+    "round_type": "Seed",
+    "announced_at": "2026-02-28T14:20:00Z",
+    "investors": [
+      "Forward Ventures",
+      "WealthWorks"
+    ]
+  },
+  {
+    "source_id": "mock_x_007",
+    "company_name": "HomeFlex",
+    "company_website": "https://homeflex.example.com",
+    "amount_usd": 45000000,
+    "round_type": "Series B",
+    "announced_at": "2026-01-08T09:00:00Z",
+    "investors": [
+      "Venture Partners",
+      "UrbanTech Fund",
+      "Home Innovations"
+    ]
+  },
+  {
+    "source_id": "mock_x_008",
+    "company_name": "AeroCraft",
+    "company_website": "https://aerocraft.example.com",
+    "amount_usd": 8000000,
+    "round_type": "Series A",
+    "announced_at": "2026-03-04T16:20:00Z",
+    "investors": [
+      "Aerospace Ventures",
+      "SkyHigh Partners"
+    ]
+  },
+  {
+    "source_id": "mock_x_009",
+    "company_name": "QuantumLeap",
+    "company_website": "https://quantumleap.example.com",
+    "amount_usd": 4000000,
+    "round_type": "Seed",
+    "announced_at": "2026-02-10T13:30:00Z",
+    "investors": [
+      "FutureTech Ventures",
+      "Quantum Fund"
+    ]
+  },
+  {
+    "source_id": "mock_x_010",
+    "company_name": "FitForge",
+    "company_website": "https://fitforge.example.com",
+    "amount_usd": 1000000,
+    "round_type": "Pre-seed",
+    "announced_at": "2026-04-15T10:00:00Z",
+    "investors": [
+      "Active Life Capital",
+      "NextGen Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_011",
+    "company_name": "Streamline",
+    "company_website": "https://streamline.example.com",
+    "amount_usd": 60000000,
+    "round_type": "Series B",
+    "announced_at": "2026-03-01T17:45:00Z",
+    "investors": [
+      "Velocity Fund",
+      "Expand Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_012",
+    "company_name": "SmartFinance",
+    "company_website": "https://smartfinance.example.com",
+    "amount_usd": 30000000,
+    "round_type": "Series B",
+    "announced_at": "2026-01-12T18:00:00Z",
+    "investors": [
+      "Capital Innovators",
+      "Venture Growth Partners"
+    ]
+  },
+  {
+    "source_id": "mock_x_013",
+    "company_name": "DataWave",
+    "company_website": "https://datawave.example.com",
+    "amount_usd": 9000000,
+    "round_type": "Series A",
+    "announced_at": "2026-04-05T19:30:00Z",
+    "investors": [
+      "Data Ventures",
+      "WavePartners"
+    ]
+  },
+  {
+    "source_id": "mock_x_014",
+    "company_name": "MediConnect",
+    "company_website": "https://mediconnect.example.com",
+    "amount_usd": 2500000,
+    "round_type": "Seed",
+    "announced_at": "2026-01-25T11:00:00Z",
+    "investors": [
+      "Healthcare Innovations",
+      "MediFund"
+    ]
+  },
+  {
+    "source_id": "mock_x_015",
+    "company_name": "SecureNet",
+    "company_website": "https://securenet.example.com",
+    "amount_usd": 3500000,
+    "round_type": "Seed",
+    "announced_at": "2026-02-18T14:30:00Z",
+    "investors": [
+      "CyberInvest",
+      "SecureTech Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_016",
+    "company_name": "GreenSphere",
+    "company_website": "https://greensphere.example.com",
+    "amount_usd": 12000000,
+    "round_type": "Series A",
+    "announced_at": "2026-03-15T20:00:00Z",
+    "investors": [
+      "EcoTech Ventures",
+      "Planet Partners"
+    ]
+  },
+  {
+    "source_id": "mock_x_017",
+    "company_name": "SoundWave",
+    "company_website": "https://soundwave.example.com",
+    "amount_usd": 5500000,
+    "round_type": "Seed",
+    "announced_at": "2026-04-10T12:15:00Z",
+    "investors": [
+      "Audio Innovations",
+      "Music Fund"
+    ]
+  },
+  {
+    "source_id": "mock_x_018",
+    "company_name": "TaskMaster",
+    "company_website": "https://taskmaster.example.com",
+    "amount_usd": 500000,
+    "round_type": "Pre-seed",
+    "announced_at": "2026-02-26T09:00:00Z",
+    "investors": [
+      "Productivity Ventures",
+      "TaskTech"
+    ]
+  },
+  {
+    "source_id": "mock_x_019",
+    "company_name": "BioSphere",
+    "company_website": "https://biosphere.example.com",
+    "amount_usd": 18000000,
+    "round_type": "Series A",
+    "announced_at": "2026-03-12T15:45:00Z",
+    "investors": [
+      "Health360 Ventures",
+      "GreenLife Capital"
+    ]
+  },
+  {
+    "source_id": "mock_x_020",
+    "company_name": "NextGen Robotics",
+    "company_website": "https://nextgenrobotics.example.com",
+    "amount_usd": 8000000,
+    "round_type": "Series A",
+    "announced_at": "2026-02-02T10:30:00Z",
+    "investors": [
+      "FutureTech Group",
+      "Innovative Robotics Fund"
+    ]
+  },
+  {
+    "source_id": "mock_x_021",
+    "company_name": "TravelPal",
+    "company_website": "https://travelpal.example.com",
+    "amount_usd": 4000000,
+    "round_type": "Seed",
+    "announced_at": "2026-04-01T08:45:00Z",
+    "investors": [
+      "Travel Ventures",
+      "Explore Fund"
+    ]
+  },
+  {
+    "source_id": "mock_x_022",
+    "company_name": "FinFlow",
+    "company_website": "https://finflow.example.com",
+    "amount_usd": 7500000,
+    "round_type": "Seed",
+    "announced_at": "2026-01-18T13:15:00Z",
+    "investors": [
+      "Fintech Innovators",
+      "Capital Circle"
+    ]
+  },
+  {
+    "source_id": "mock_x_023",
+    "company_name": "VeloCity",
+    "company_website": "https://velocity.example.com",
+    "amount_usd": 22000000,
+    "round_type": "Series B",
+    "announced_at": "2026-03-28T16:50:00Z",
+    "investors": [
+      "Momentum Capital",
+      "Rapid Growth Partners"
+    ]
+  },
+  {
+    "source_id": "mock_x_024",
+    "company_name": "CraftMakers",
+    "company_website": "https://craftmakers.example.com",
+    "amount_usd": 3000000,
+    "round_type": "Seed",
+    "announced_at": "2026-04-18T11:00:00Z",
+    "investors": [
+      "Maker Ventures",
+      "Craft Innovations"
+    ]
+  },
+  {
+    "source_id": "mock_x_025",
+    "company_name": "RetailSage",
+    "company_website": "https://retailsage.example.com",
+    "amount_usd": 15000000,
+    "round_type": "Series A",
+    "announced_at": "2026-01-05T14:20:00Z",
+    "investors": [
+      "Retail Vision Fund",
+      "Market Insights Group"
+    ]
+  },
+  {
+    "source_id": "mock_x_026",
+    "company_name": "CloudNest",
+    "company_website": "https://cloudnest.example.com",
+    "amount_usd": 500000,
+    "round_type": "Pre-seed",
+    "announced_at": "2026-03-21T21:35:00Z",
+    "investors": [
+      "Cloud Frontier",
+      "Nest Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_027",
+    "company_name": "AgriTech Solutions",
+    "company_website": "https://agritechsolutions.example.com",
+    "amount_usd": 7000000,
+    "round_type": "Seed",
+    "announced_at": "2026-02-08T15:10:00Z",
+    "investors": [
+      "FarmTech Capital",
+      "Green Fields Fund"
+    ]
+  },
+  {
+    "source_id": "mock_x_028",
+    "company_name": "InsightAnalytics",
+    "company_website": "https://insightanalytics.example.com",
+    "amount_usd": 36000000,
+    "round_type": "Series B",
+    "announced_at": "2026-01-14T12:00:00Z",
+    "investors": [
+      "Data Holdings",
+      "Insight Ventures"
+    ]
+  },
+  {
+    "source_id": "mock_x_029",
+    "company_name": "HomeChef Pro",
+    "company_website": "https://homechefpro.example.com",
+    "amount_usd": 2000000,
+    "round_type": "Seed",
+    "announced_at": "2026-03-31T09:50:00Z",
+    "investors": [
+      "Culinary Ventures",
+      "CookTech Partners"
+    ]
+  },
+  {
+    "source_id": "mock_x_030",
+    "company_name": "UrbanGrowth",
+    "company_website": "https://urbangrowth.example.com",
+    "amount_usd": 30000000,
+    "round_type": "Series A",
+    "announced_at": "2026-04-03T18:45:00Z",
+    "investors": [
+      "City Ventures",
+      "Urban Innovations Fund"
+    ]
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "source_id": "mock_yc_001",
+    "company_name": "DigitMark",
+    "company_website": "https://digitmark.example.com",
+    "description": "DigitMark provides an intuitive platform for tracking digital marketing engagement across all channels, making it easier for teams to measure their impact in real time.",
+    "batch": "S24"
+  },
+  {
+    "source_id": "mock_yc_002",
+    "company_name": "EcoPack",
+    "company_website": "https://ecopack.example.com",
+    "description": "EcoPack specializes in sustainable packaging solutions that reduce waste and enhance brand visibility, perfect for eco-conscious businesses.",
+    "batch": "W24"
+  },
+  {
+    "source_id": "mock_yc_003",
+    "company_name": "FinanceNeat",
+    "company_website": "https://financeneat.example.com",
+    "description": "FinanceNeat offers a streamlined budgeting tool that integrates directly with your bank accounts, helping users track and manage their finances effortlessly.",
+    "batch": "X25"
+  },
+  {
+    "source_id": "mock_yc_004",
+    "company_name": "Healthify",
+    "company_website": "https://healthify.example.com",
+    "description": "Healthify is an all-in-one wellness platform that connects users with nutritionists and fitness coaches to foster healthier lifestyles.",
+    "batch": "S25"
+  },
+  {
+    "source_id": "mock_yc_005",
+    "company_name": "CraftSync",
+    "company_website": "https://craftsync.example.com",
+    "description": "CraftSync helps creators manage their portfolios with a collaborative workspace designed for sharing and showcasing work in progress.",
+    "batch": "F25"
+  },
+  {
+    "source_id": "mock_yc_006",
+    "company_name": "TaskMinder",
+    "company_website": "https://taskminder.example.com",
+    "description": "TaskMinder is an AI-driven task management tool that prioritizes your to-do list based on urgent deadlines and personal productivity patterns.",
+    "batch": "W25"
+  },
+  {
+    "source_id": "mock_yc_007",
+    "company_name": "ChoreHero",
+    "company_website": "https://chorehero.example.com",
+    "description": "ChoreHero gamifies household chores by turning them into fun challenges, helping families collaborate and stay motivated.",
+    "batch": "S24"
+  },
+  {
+    "source_id": "mock_yc_008",
+    "company_name": "HealthBeam",
+    "company_website": "https://healthbeam.example.com",
+    "description": "HealthBeam connects patients with telehealth services, providing seamless access to medical professionals from the comfort of home.",
+    "batch": "W24"
+  },
+  {
+    "source_id": "mock_yc_009",
+    "company_name": "FluidClass",
+    "company_website": "https://fluidclass.example.com",
+    "description": "FluidClass offers a dynamic learning platform for educators to create engaging online courses, complete with live interaction tools.",
+    "batch": "X25"
+  },
+  {
+    "source_id": "mock_yc_010",
+    "company_name": "LegalEase",
+    "company_website": "https://legalease.example.com",
+    "description": "LegalEase simplifies legal document creation for small businesses, making compliance straightforward and affordable.",
+    "batch": "S25"
+  },
+  {
+    "source_id": "mock_yc_011",
+    "company_name": "InvestSmart",
+    "company_website": "https://investsmart.example.com",
+    "description": "InvestSmart empowers novice investors with a user-friendly interface for building and managing diverse investment portfolios.",
+    "batch": "F25"
+  },
+  {
+    "source_id": "mock_yc_012",
+    "company_name": "AgriGen",
+    "company_website": "https://agrigen.example.com",
+    "description": "AgriGen leverages genetics to develop high-yield crops tailored to specific climates, boosting agriculture efficiency sustainably.",
+    "batch": "W25"
+  },
+  {
+    "source_id": "mock_yc_013",
+    "company_name": "NoteWave",
+    "company_website": "https://notewave.example.com",
+    "description": "NoteWave transforms the note-taking experience by integrating voice recognition, allowing users to record and organize ideas effortlessly.",
+    "batch": "S24"
+  },
+  {
+    "source_id": "mock_yc_014",
+    "company_name": "SkillBridge",
+    "company_website": "https://skillbridge.example.com",
+    "description": "SkillBridge connects skilled tradespeople with local job opportunities, providing a platform for work and career advancement.",
+    "batch": "W24"
+  },
+  {
+    "source_id": "mock_yc_015",
+    "company_name": "TravelNest",
+    "company_website": "https://travelnest.example.com",
+    "description": "TravelNest curates personalized travel itineraries using AI, ensuring unique experiences tailored to individual preferences.",
+    "batch": "X25"
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "source_id": "mock_x_001",
+    "author": "Maria Gonzalez",
+    "post_text": "Today we're thrilled to announce the launch of ClarityHub, a next-generation data visualization platform designed to empower teams to make data-driven decisions. With our intuitive interface and powerful analytics tools, ClarityHub helps users uncover insights like never before. Explore how we can transform your data into actionable strategies by visiting our website!",
+    "reactions": 301,
+    "comments": 12,
+    "posted_at": "2026-04-18T14:22:00Z",
+    "company_name": "ClarityHub",
+    "company_website": "https://clarityhub.example.com"
+  },
+  {
+    "source_id": "mock_x_002",
+    "author": "Jason Lin",
+    "post_text": "Excited to share that we are launching FlowSync, an innovative workflow automation tool tailored for small businesses! Our platform integrates seamlessly with existing software, enabling teams to optimize their productivity and streamline processes. Join the thousands of users who are already experiencing the power of FlowSync.",
+    "reactions": 542,
+    "comments": 28,
+    "posted_at": "2026-04-12T09:45:00Z",
+    "company_name": "FlowSync",
+    "company_website": "https://flowsync.example.com"
+  },
+  {
+    "source_id": "mock_x_003",
+    "author": "Nina Patel",
+    "post_text": "Today marks a significant milestone for our team at EcoTrack as we unveil our all-in-one climate impact assessment tool. With EcoTrack, companies can easily measure and reduce their carbon footprint. We invite businesses to take part in the sustainability revolution by adopting EcoTrack and making a real difference. Learn more at our website!",
+    "reactions": 879,
+    "comments": 34,
+    "posted_at": "2026-04-15T11:30:00Z",
+    "company_name": "EcoTrack",
+    "company_website": "https://ecotrack.example.com"
+  },
+  {
+    "source_id": "mock_x_004",
+    "author": "Tom Kwan",
+    "post_text": "Introducing FinSavvy, a personal finance app that adapts to your unique financial goals. With features like AI-driven budgeting and investment tracking, we've made financial planning accessible to everyone. I'm proud of our team for bringing this vision to life. Explore FinSavvy today to take control of your financial future!",
+    "reactions": 2035,
+    "comments": 56,
+    "posted_at": "2026-04-08T19:00:00Z",
+    "company_name": "FinSavvy",
+    "company_website": "https://finsavvy.example.com"
+  },
+  {
+    "source_id": "mock_x_005",
+    "author": "Olivia Brown",
+    "post_text": "We are excited to announce the launch of CodeZen, a collaborative coding platform designed for developers of all levels. CodeZen features real-time code sharing and comprehensive learning resources, making it easier than ever for teams to collaborate and innovate together. Join our community and start coding smarter with CodeZen!",
+    "reactions": 482,
+    "comments": 18,
+    "posted_at": "2026-04-10T15:17:00Z",
+    "company_name": "CodeZen",
+    "company_website": "https://codezen.example.com"
+  },
+  {
+    "source_id": "mock_x_006",
+    "author": "Samuel Brown",
+    "post_text": "Now live: DevOpsPro! Our platform simplifies the development and operations lifecycle, providing tools that help teams ship software faster and with higher quality. We believe in empowering teams with the right technology to make their work life easier and more productive. Discover what DevOpsPro can do for you!",
+    "reactions": 1234,
+    "comments": 48,
+    "posted_at": "2026-04-14T20:45:00Z",
+    "company_name": "DevOpsPro",
+    "company_website": "https://devopspro.example.com"
+  },
+  {
+    "source_id": "mock_x_007",
+    "author": "Emma Wei",
+    "post_text": "Introducing AgritechAI, a revolutionary platform that leverages artificial intelligence to optimize farming practices. From predictive analytics to resource management, we've developed solutions that enhance productivity and sustainability for farmers everywhere. We're excited to support the agriculture industry in its transition to smarter methods!",
+    "reactions": 254,
+    "comments": 7,
+    "posted_at": "2026-04-16T08:00:00Z",
+    "company_name": "AgritechAI",
+    "company_website": "https://agritechai.example.com"
+  },
+  {
+    "source_id": "mock_x_008",
+    "author": "David Rogers",
+    "post_text": "We are excited to unveil HealthConnect, a cutting-edge telehealth platform that bridges the gap between patients and healthcare providers. With interactive features and a focus on user experience, HealthConnect aims to make healthcare more accessible and efficient for everyone. Join us in transforming healthcare—visit our site for more information!",
+    "reactions": 672,
+    "comments": 29,
+    "posted_at": "2026-04-19T12:30:00Z",
+    "company_name": "HealthConnect",
+    "company_website": "https://healthconnect.example.com"
+  },
+  {
+    "source_id": "mock_x_009",
+    "author": "Laura Sanchez",
+    "post_text": "Today we're launching ContentSphere, a new content management system designed to streamline the content creation process for teams. Our platform features collaborative editing tools and advanced SEO recommendations, helping teams to produce high-quality content effortlessly. Start your free trial today and elevate your content strategy!",
+    "reactions": 421,
+    "comments": 20,
+    "posted_at": "2026-04-11T16:05:00Z",
+    "company_name": "ContentSphere",
+    "company_website": "https://contentsphere.example.com"
+  },
+  {
+    "source_id": "mock_x_010",
+    "author": "Marcus Cole",
+    "post_text": "Thrilled to announce the launch of InvestSmart, our innovative investment analytics platform that provides real-time insights based on market trends. We empower investors with the tools they need to make informed decisions. Start maximizing your portfolio's potential with InvestSmart—check us out online!",
+    "reactions": 1317,
+    "comments": 44,
+    "posted_at": "2026-04-09T10:00:00Z",
+    "company_name": "InvestSmart",
+    "company_website": "https://investsmart.example.com"
+  },
+  {
+    "source_id": "mock_x_011",
+    "author": "Catherine Lee",
+    "post_text": "Excited to introduce NextGenSafety, a comprehensive workplace safety management system designed to protect both employees and employers. Our platform helps identify risks and compliance issues efficiently, ensuring a safer working environment for everyone. Join us on our mission to enhance workplace safety today!",
+    "reactions": 589,
+    "comments": 27,
+    "posted_at": "2026-04-06T13:09:00Z",
+    "company_name": "NextGenSafety",
+    "company_website": "https://nextgensafety.example.com"
+  },
+  {
+    "source_id": "mock_x_012",
+    "author": "Oliver Brown",
+    "post_text": "Today marks our official launch of EduVate, an interactive learning platform that reimagines education through technology. With engaging content and personalized learning paths, we aim to provide a transformative educational experience for students and educators alike. Discover how EduVate can empower learners everywhere!",
+    "reactions": 712,
+    "comments": 22,
+    "posted_at": "2026-04-05T11:20:00Z",
+    "company_name": "EduVate",
+    "company_website": "https://eduvate.example.com"
+  },
+  {
+    "source_id": "mock_x_013",
+    "author": "Hannah Kim",
+    "post_text": "Proud to announce our launch of FitTrack, an innovative fitness app that offers personalized workout plans and nutritional guidance. Designed for users of all fitness levels, FitTrack encourages a holistic approach to health and wellness. Join our growing community and take the first steps towards a healthier lifestyle!",
+    "reactions": 894,
+    "comments": 33,
+    "posted_at": "2026-04-13T17:15:00Z",
+    "company_name": "FitTrack",
+    "company_website": "https://fittrack.example.com"
+  },
+  {
+    "source_id": "mock_x_014",
+    "author": "Liam Smith",
+    "post_text": "We’re excited to launch TechSpark, a cloud-based project management solution that enhances team collaboration and efficiency. TechSpark offers customizable workflows and real-time updates, making it easier for teams to stay aligned and meet their goals. Explore TechSpark and boost your team's productivity today!",
+    "reactions": 243,
+    "comments": 10,
+    "posted_at": "2026-04-17T14:30:00Z",
+    "company_name": "TechSpark",
+    "company_website": "https://techspark.example.com"
+  },
+  {
+    "source_id": "mock_x_015",
+    "author": "Sophia Chen",
+    "post_text": "Introducing StyleSphere, a fashion discovery app that connects users with personalized outfit recommendations based on their individual style preferences. We're proud to launch this innovative platform that makes fashion accessible and fun for everyone. Visit our site to start exploring your new wardrobe today!",
+    "reactions": 952,
+    "comments": 40,
+    "posted_at": "2026-04-07T09:15:00Z",
+    "company_name": "StyleSphere",
+    "company_website": "https://stylesphere.example.com"
+  }
+]
