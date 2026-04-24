@@ -275,6 +275,20 @@ def list_funding_rounds(
     return [_row_to_funding(r) for r in rows]
 
 
+def list_companies_without_contacts(conn: sqlite3.Connection) -> list[Company]:
+    """Return companies that do not yet have any contact row. Used by the enrichment agent."""
+    rows = conn.execute(
+        """
+        SELECT c.id, c.name, c.website, c.description, c.created_at
+        FROM company c
+        LEFT JOIN contact ct ON ct.company_id = c.id
+        WHERE ct.id IS NULL
+        ORDER BY c.name
+        """
+    ).fetchall()
+    return [_row_to_company(r) for r in rows]
+
+
 def list_contacts_by_company(conn: sqlite3.Connection, company_id: int) -> list[Contact]:
     rows = conn.execute(
         "SELECT * FROM contact WHERE company_id = ? ORDER BY confidence DESC",

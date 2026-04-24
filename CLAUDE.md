@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Solo 2-day take-home assessment for HireLatam. The plan lives in [PLAN.md](PLAN.md) (what to build and why) and [PHASES.md](PHASES.md) (how, in order); where code exists it is the source of truth and the plan docs are historical context.
 
-**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅, P4 (mock sources) ✅, P5 (agent orchestrator) ✅. P6–P9 not started. `dashboard.py` is still a Streamlit hello-world. Classifier + eval: [src/classifier/](src/classifier/), [evals/run_classifier.py](evals/run_classifier.py). Sources: [src/sources/producthunt.py](src/sources/producthunt.py) (real), [src/sources/mocks.py](src/sources/mocks.py), [src/sources/mock_generator.py](src/sources/mock_generator.py). Orchestrator: [src/agent/](src/agent/) with [run_agent.py](run_agent.py) as CLI; system prompt at [prompts/orchestrator.md](prompts/orchestrator.md); turn-by-turn JSONL logs in `data/runs/`.
+**Phase progress:** P0 (scaffold) ✅, P1 (data model + persistence) ✅, P2 (launch classifier) ✅, P3 (Product Hunt ingestion) ✅, P4 (mock sources) ✅, P5 (ingestion orchestrator) ✅, P6 (enrichment orchestrator) ✅. P7–P9 not started. `dashboard.py` is still a Streamlit hello-world. Classifier + eval: [src/classifier/](src/classifier/), [evals/run_classifier.py](evals/run_classifier.py). Sources: [src/sources/producthunt.py](src/sources/producthunt.py) (real), [src/sources/mocks.py](src/sources/mocks.py), [src/sources/mock_generator.py](src/sources/mock_generator.py). Agents: generic loop at [src/agent/orchestrator.py](src/agent/orchestrator.py); ingestion tools/prompt at [src/agent/tools.py](src/agent/tools.py) / [prompts/orchestrator.md](prompts/orchestrator.md) with CLI [run_agent.py](run_agent.py); enrichment tools/prompt at [src/agent/enrichment_tools.py](src/agent/enrichment_tools.py) / [prompts/enrichment.md](prompts/enrichment.md) with CLI [run_enrichment.py](run_enrichment.py); turn-by-turn JSONL logs in `data/runs/`.
 
 Read [PLAN.md](PLAN.md) §5 (Data Source Decisions) and §7 (Deliberate Exclusions) before proposing changes — scope is intentionally narrow and several "obvious" improvements (FastAPI, Postgres, Docker, observability, real LinkedIn/X integration) have been explicitly ruled out for the timebox. Don't reintroduce them without discussion.
 
@@ -83,7 +83,8 @@ Tooling is `uv` with Python ≥ 3.11. `uv.lock` is committed for reviewer reprod
 | Ingest all mocks | `make ingest-mocks` | `uv run python -m src.sources.mocks` |
 | Regenerate mock seeds | `make generate-mocks` | `uv run python -m src.sources.mock_generator` |
 | Run dashboard | `make dashboard` | `uv run streamlit run dashboard.py` |
-| Run agent | `make run-agent` | `uv run python run_agent.py` |
+| Run ingestion agent | `make run-agent` | `uv run python run_agent.py` |
+| Run enrichment agent | `make run-enrichment` | `uv run python run_enrichment.py` |
 | Tests | `make test` | `uv run pytest` |
 | Lint | `make lint` | `uv run ruff check .` |
 | Format | `make fmt` | `uv run ruff format .` |
@@ -124,7 +125,10 @@ The plan has explicit cut points ([PHASES.md §Contingency & Cut Points](PHASES.
 
 ## Orchestrator invariants
 
-- **Agent routes, code writes.** The agent never emits SQL, never constructs a Pydantic model by name. It passes dicts to `persist_launch`/`persist_funding`/`persist_company` and the handlers validate + write. Phase 1 principle — don't weaken it.
+- **Two workflows share one loop.** `run_agent()` in [src/agent/orchestrator.py](src/agent/orchestrator.py) takes `tools`, `handlers`, `system_prompt`, and `tag` as params; ingestion (Phase 5) and enrichment (Phase 6) are two invocations with different tool sets. Do not fork the loop — add new workflows by passing a new tool bundle.
+- **Enrichment is idempotent by construction.** `list_companies_missing_contacts` returns only companies without a contact row. A half-completed run plus a re-run covers any gap. Use this instead of explicit retry logic.
+- **`find_*` tools are deterministic mocks** seeded by `hashlib.md5(company_name + field)`. Same company → same email/phone/LinkedIn/X handle across re-runs. Miss rates: email 15%, phone 30%, LinkedIn 5%, X 20% (verified empirically: 12/78, 23/78, 3/78, 17/78). Production swap: Hunter.io for email, Apollo.io for phone + LinkedIn, a paid X-API proxy for handles.
+- **Agent routes, code writes.** The agent never emits SQL, never constructs a Pydantic model by name. It passes dicts to `persist_launch`/`persist_funding`/`persist_company`/`persist_contact` and the handlers validate + write. Phase 1 principle — don't weaken it.
 - **Bundle-shaped persist calls.** `persist_launch({company, launch, classification})` upserts the company internally. The agent never needs to know a `company_id`. Same for `persist_funding({company, funding})`.
 - **`persist_launch` refuses `is_launch=false` items.** Belt-and-suspenders enforcement of "classify before persist." If the policy check fires, it's almost always a prompt regression.
 - **Every tool handler returns a dict; Pydantic failures surface as `{"error": ..., "code": "validation_error"}`.** The agent self-corrects once per item (per the prompt's retry rule), then skips. Handlers never raise into the orchestrator loop.

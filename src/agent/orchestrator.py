@@ -17,7 +17,9 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from src.agent.logger import RunLogger
-from src.agent.tools import HANDLERS, TOOLS, ToolContext
+from src.agent.tools import HANDLERS as INGESTION_HANDLERS
+from src.agent.tools import TOOLS as INGESTION_TOOLS
+from src.agent.tools import ToolContext
 
 # gpt-4o-mini truncates the classify fan-out and skips entire sources on runs of this size.
 # gpt-4o follows the prompt's per-source sequencing reliably. Classifier stays on mini.
@@ -78,6 +80,7 @@ def _execute_tool_call(
     ctx: ToolContext,
     logger: RunLogger,
     turn: int,
+    handlers: dict[str, Any],
 ) -> dict[str, Any]:
     name = call.function.name
     raw_args = call.function.arguments
@@ -96,7 +99,7 @@ def _execute_tool_call(
         )
         return result
 
-    handler = HANDLERS.get(name)
+    handler = handlers.get(name)
     if handler is None:
         result = {"error": f"unknown tool {name!r}", "code": "validation_error"}
     else:
@@ -129,24 +132,38 @@ def run_agent(
     persist: bool = True,
     classify_fn: Any = None,
     runs_dir: Path | None = None,
+    tools: list[dict[str, Any]] | None = None,
+    handlers: dict[str, Any] | None = None,
+    system_prompt: str | None = None,
+    tag: str | None = None,
 ) -> RunResult:
-    """Run the orchestrator.
+    """Run a generic agent loop.
 
-    Pass a fake ``client`` in tests (duck-typed ``chat.completions.create``).
-    Pass ``classify_fn`` to stub the classifier.
+    Defaults wire up the Phase 5 ingestion workflow. Enrichment (Phase 6) and
+    any future workflows swap in their own ``tools``, ``handlers``, and
+    ``system_prompt``. Pass a fake ``client`` in tests (duck-typed
+    ``chat.completions.create``).
     """
     if client is None:
         from openai import OpenAI
 
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-    logger = RunLogger(runs_dir=runs_dir) if runs_dir else RunLogger()
+    if tools is None:
+        tools = INGESTION_TOOLS
+    if handlers is None:
+        handlers = INGESTION_HANDLERS
+    if system_prompt is None:
+        system_prompt = load_system_prompt()
+
+    logger = (
+        RunLogger(runs_dir=runs_dir, tag=tag) if runs_dir else RunLogger(tag=tag)
+    )
     ctx_kwargs: dict[str, Any] = {"conn": conn, "persist": persist}
     if classify_fn is not None:
         ctx_kwargs["classify_fn"] = classify_fn
     ctx = ToolContext(**ctx_kwargs)
 
-    system_prompt = load_system_prompt()
     messages: list[dict[str, Any]] = [{"role": "system", "content": system_prompt}]
 
     logger.log(
@@ -163,7 +180,7 @@ def run_agent(
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            tools=TOOLS,
+            tools=tools,
             tool_choice="auto",
             parallel_tool_calls=True,
         )
@@ -191,7 +208,9 @@ def run_agent(
 
         for call in tool_calls:
             tool_call_count += 1
-            result = _execute_tool_call(call, ctx=ctx, logger=logger, turn=turn)
+            result = _execute_tool_call(
+                call, ctx=ctx, logger=logger, turn=turn, handlers=handlers
+            )
             messages.append(
                 {
                     "role": "tool",
